@@ -2,8 +2,8 @@ import { pgTable, serial, text, boolean, integer } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  clerkId: text("clerk_id").notNull().unique(),
-  email: text("email").notNull(),
+  email: text("email").notNull().unique(),
+  password: text("password").notNull(), // hashed password
 });
 
 export const todos = pgTable("todos", {

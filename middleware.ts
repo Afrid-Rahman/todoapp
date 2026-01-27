@@ -1,21 +1,31 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-const isPublicRoute = createRouteMatcher([
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-]);
+const PUBLIC_ROUTES = [
+  "/login",
+  "/register",
+  "/api/auth/login",
+  "/api/auth/register",
+];
 
-export default clerkMiddleware(async (auth, req) => {
-  if (isPublicRoute(req)) return;
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-  const session = await auth();
-
-  if (!session.isAuthenticated) {
-    return NextResponse.redirect(new URL("/sign-in", req.url));
+  if (PUBLIC_ROUTES.includes(pathname)) {
+    return NextResponse.next();
   }
-});
 
-export const config = {
-  matcher: ["/((?!_next|.*\\..*).*)"],
-};
+  const token = req.cookies.get("token")?.value;
+
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  try {
+    jwt.verify(token, process.env.JWT_SECRET!);
+    return NextResponse.next();
+  } catch {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+}
