@@ -1,16 +1,19 @@
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
+import { getUser } from "@/lib/auth";
 
-export default function RootLayout({ children }: any) {
+export default async function RootLayout({ children }: any) {
+  const user = await getUser();
+
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className="min-h-screen bg-zinc-50">
-          <Navbar />
-          <main className="max-w-4xl mx-auto p-6">{children}</main>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className="min-h-screen bg-gradient-to-br 
+        from-sky-200 via-purple-100 to-indigo-200">
+        <Navbar user={user} />
+        <main className="max-w-4xl mx-auto p-6">
+          {children}
+        </main>
+      </body>
+    </html>
   );
 }

@@ -1,14 +1,30 @@
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema";
-import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 export async function POST(req: Request) {
-  const { email, password } = await req.json();
+  const body = await req.json();
 
-  const hash = await bcrypt.hash(password, 10);
+  const {
+    firstName,
+    lastName,
+    phone,
+    dob,
+    email,
+    password,
+  } = body;
 
-  await db.insert(users).values({ email, password: hash });
+  const hashed = await bcrypt.hash(password, 10);
+
+  await db.insert(users).values({
+    firstName,
+    lastName,
+    phone,
+    dob,
+    email,
+    password: hashed,
+  });
 
   return NextResponse.json({ success: true });
 }

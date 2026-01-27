@@ -1,30 +1,35 @@
 "use client";
+
 import { useState } from "react";
+import { addTodo, getTodos } from "@/actions/todoAction";
 
-export default function AddTodo({ createTodo }: any) {
-  const [input, setInput] = useState("");
+export default function AddTodo({ userId, onAdd }: any) {
+  const [text, setText] = useState("");
 
-  const handleAdd = () => {
-    if (!input.trim()) return;
-    createTodo(input.trim());
-    setInput("");
+  const submit = async () => {
+    await addTodo(text, userId);
+    const fresh = await getTodos(userId);
+    onAdd(fresh);
+    setText("");
   };
 
   return (
-    <div className="flex gap-2 mt-4">
-      <input
-        className="flex-1 border rounded-md px-3 py-2"
-        placeholder="Add new task..."
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && handleAdd()}
-      />
-      <button
-        onClick={handleAdd}
-        className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 rounded-md"
-      >
-        Add
-      </button>
-    </div>
+    <div className="flex gap-4 mb-6">
+  <input
+  value={text}
+  onChange={(e) => setText(e.target.value)}
+  placeholder="New todo"
+  className="flex-1 px-5 py-3 rounded-2xl bg-white/40 backdrop-blur-md border border-white/30 shadow-inner text-lg placeholder-gray-500 focus:outline-none"
+/>
+
+<button
+  onClick={submit}
+  className="px-7 py-3 rounded-2xl bg-indigo-600 text-white font-semibold shadow-lg hover:scale-105 transition"
+>
+  Add
+</button>
+
+</div>
+
   );
 }

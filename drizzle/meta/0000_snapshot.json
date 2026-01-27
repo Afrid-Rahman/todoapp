@@ -1,5 +1,5 @@
 {
-  "id": "b0346077-15ea-4734-a852-70fa9d06766a",
+  "id": "2e3b3a6e-5041-4476-8c80-d85319d37167",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -66,28 +66,52 @@
           "primaryKey": true,
           "notNull": true
         },
-        "clerk_id": {
-          "name": "clerk_id",
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "name": "password",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "email": {
-          "name": "email",
-          "type": "text",
+        "first_name": {
+          "name": "first_name",
+          "type": "varchar(100)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "last_name": {
+          "name": "last_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dob": {
+          "name": "dob",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "users_clerk_id_unique": {
-          "name": "users_clerk_id_unique",
+        "users_email_unique": {
+          "name": "users_email_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "clerk_id"
+            "email"
           ]
         }
       },

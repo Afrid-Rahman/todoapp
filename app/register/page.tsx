@@ -1,52 +1,106 @@
 "use client";
+
 import { useState } from "react";
 import Link from "next/link";
 
-export default function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-const register = async () => {
-  await fetch("/api/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+export default function RegisterPage() {
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    dob: "",
+    email: "",
+    password: "",
   });
-  window.location.href = "/login";
-};
+
+  const register = async (e: any) => {
+    e.preventDefault();
+
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify(form),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (res.ok) {
+      window.location.href = "/login";
+    } else {
+      alert("Registration failed");
+    }
+  };
+
+  const update = (key: string, value: string) =>
+    setForm({ ...form, [key]: value });
 
   return (
-    <div className="h-screen flex items-center justify-center">
-      <div className="p-6 bg-white shadow rounded w-80">
-        <h1 className="text-xl mb-4">Sign Up</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-200 via-purple-100 to-indigo-200">
+      <form
+        onSubmit={register}
+        className="w-full max-w-lg bg-white/50 backdrop-blur-xl shadow-xl rounded-2xl p-8"
+      >
+        <h1 className="text-3xl font-bold text-indigo-600 mb-6 text-center">
+          Create Account
+        </h1>
+
+        <div className="grid grid-cols-2 gap-4">
+          <input
+            placeholder="First name"
+            required
+            onChange={(e) => update("firstName", e.target.value)}
+            className="input"
+          />
+          <input
+            placeholder="Last name"
+            required
+            onChange={(e) => update("lastName", e.target.value)}
+            className="input"
+          />
+        </div>
 
         <input
+          placeholder="Mobile number"
+          required
+          onChange={(e) => update("phone", e.target.value)}
+          className="input mt-4"
+        />
+
+        <input
+          type="date"
+          required
+          onChange={(e) => update("dob", e.target.value)}
+          className="input mt-4"
+        />
+
+        <input
+          type="email"
           placeholder="Email"
-          className="border p-2 w-full mb-2"
-          onChange={(e) => setEmail(e.target.value)}
+          required
+          onChange={(e) => update("email", e.target.value)}
+          className="input mt-4"
         />
 
         <input
           type="password"
           placeholder="Password"
-          className="border p-2 w-full mb-4"
-          onChange={(e) => setPassword(e.target.value)}
+          required
+          onChange={(e) => update("password", e.target.value)}
+          className="input mt-4"
         />
 
         <button
-          onClick={register}
-          className="bg-green-600 text-white w-full p-2 rounded"
+          type="submit"
+          className="w-full mt-6 py-3 rounded-xl bg-green-600 text-white font-semibold text-lg hover:bg-green-700 transition shadow-lg"
         >
           Create Account
         </button>
 
-        <p className="text-sm mt-3 text-center">
+        <p className="text-center text-gray-700 mt-6">
           Already have an account?{" "}
-          <Link href="/login" className="text-indigo-600">
+          <Link href="/login" className="text-indigo-600 font-semibold">
             Login
           </Link>
         </p>
-      </div>
+      </form>
     </div>
   );
 }
