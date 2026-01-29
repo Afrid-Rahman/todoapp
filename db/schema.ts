@@ -18,4 +18,38 @@ export const todos = pgTable("todos", {
   userId: integer("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+
+import { timestamp } from "drizzle-orm/pg-core";
+
+/* =========================
+   CHAT TABLE
+========================= */
+export const chats = pgTable("chats", {
+  id: serial("id").primaryKey(),
+
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+
+  title: varchar("title", { length: 255 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+/* =========================
+   MESSAGES TABLE
+========================= */
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
+
+  chatId: integer("chat_id")
+    .notNull()
+    .references(() => chats.id, { onDelete: "cascade" }),
+
+  role: varchar("role", { length: 10 }).notNull(), // "user" | "bot"
+  content: text("content").notNull(),
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });

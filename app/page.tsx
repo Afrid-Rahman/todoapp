@@ -1,8 +1,11 @@
 import { getUser } from "@/lib/auth";
 import Todos from "@/components/todos";
+import ChatBot from "@/components/ChatBot";
+import LayoutShell from "@/components/LayoutShell";
+import ProductivityStats from "@/components/ProductivityStats";
 
 export default async function Home() {
-  const user = await getUser();   // ✅ IMPORTANT
+  const user = await getUser();
 
   if (!user) {
     return (
@@ -15,24 +18,28 @@ export default async function Home() {
   }
 
   return (
-  <div className="min-h-[80vh] flex items-center justify-center">
-    <div
-      className="
-        w-full max-w-2xl
-        rounded-3xl
-        bg-white/30
-        backdrop-blur-xl
-        border border-white/30
-        shadow-2xl
-        p-8
-      "
-    >
-      <h1 className="text-4xl font-bold text-indigo-700 mb-6">
-        My Todos
-      </h1>
+    <LayoutShell userId={user.id}>
+      <div
+        className="
+          rounded-3xl
+          bg-white/30
+          backdrop-blur-xl
+          border border-white/30
+          shadow-2xl
+          p-8
+          overflow-y-auto
+        "
+      >
+        <h1 className="text-4xl font-bold text-indigo-700 mb-6">
+          My Todos
+        </h1>
 
-      <Todos userId={user.id} />
-    </div>
-  </div>
-);
+        <ProductivityStats userId={user.id} />
+        <Todos userId={user.id} />
+        <ChatBot userId={user.id} />
+      </div>
+      
+
+    </LayoutShell>
+  );
 }
