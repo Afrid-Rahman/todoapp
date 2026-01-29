@@ -222,19 +222,37 @@ const res = await fetch("/api/chatbot", {
      ACCEPT / DECLINE
   ========================= */
   async function acceptTodo(todo: TodoSuggestion) {
-    await fetch("/api/todos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: todo.title,
-        userId,
-      }),
-    });
+  await fetch("/api/todos", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      title: todo.title,
+      userId,
+    }),
+  });
 
-    window.dispatchEvent(new Event("todo-added"));
-    onTodoAdded?.();
-    setSuggestions((prev) => prev.filter((t) => t !== todo));
-  }
+  // 🧠 SAVE MEMORY FOR CHATBOT
+  await fetch("/api/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chatId,
+      role: "user",
+      content: `I accepted this todo: ${todo.title}`,
+    }),
+  });
+
+  // 🧠 ADD TO LOCAL CHAT CONTEXT
+  setMessages((prev) => [
+    ...prev,
+    { role: "user", content: `I accepted this todo: ${todo.title}` },
+  ]);
+
+  window.dispatchEvent(new Event("todo-added"));
+  onTodoAdded?.();
+  setSuggestions((prev) => prev.filter((t) => t !== todo));
+}
+
 
   function declineTodo(todo: TodoSuggestion) {
     setSuggestions((prev) => prev.filter((t) => t !== todo));

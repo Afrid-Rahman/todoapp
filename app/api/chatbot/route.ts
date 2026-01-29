@@ -23,7 +23,8 @@ You MUST ALWAYS respond ONLY in JSON.
 Two modes:
 
 1) MEMORY MODE:
-If the user asks about past messages or history:
+If the user asks about past messages, history, or accepted tasks:
+
 {
   "clarificationNeeded": false,
   "answer": "your answer",
